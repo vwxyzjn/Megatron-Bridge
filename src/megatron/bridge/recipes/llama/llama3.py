@@ -654,11 +654,16 @@ def llama3_8b_finetune_config(**user_kwargs: Unpack[Llama3FinetuneKwargs]) -> Co
     if is_full_sft:
         config.model.tensor_model_parallel_size = 2
         config.model.pipeline_model_parallel_size = 1
+        config.peft = None
     else:
         config.model.tensor_model_parallel_size = 1
         config.model.pipeline_model_parallel_size = 1
-        config.peft.dim = 8
-        config.peft.alpha = 16
+        if isinstance(peft, str) and peft.lower() in ["lora", "dora"]:
+            config.peft = default_peft_config(peft)
+            config.peft.dim = 8
+            config.peft.alpha = 16
+        else:
+            config.peft = peft
         config.optimizer.use_distributed_optimizer = False
         config.model.cross_entropy_loss_fusion = False
 
@@ -689,11 +694,16 @@ def llama31_8b_finetune_config(**user_kwargs: Unpack[Llama3FinetuneKwargs]) -> C
     if is_full_sft:
         config.model.tensor_model_parallel_size = 2
         config.model.pipeline_model_parallel_size = 1
+        config.peft = None
     else:
         config.model.tensor_model_parallel_size = 1
         config.model.pipeline_model_parallel_size = 1
-        config.peft.dim = 8
-        config.peft.alpha = 16
+        if isinstance(peft, str) and peft.lower() in ["lora", "dora"]:
+            config.peft = default_peft_config(peft)
+            config.peft.dim = 8
+            config.peft.alpha = 16
+        else:
+            config.peft = peft
         config.optimizer.use_distributed_optimizer = False
         config.model.cross_entropy_loss_fusion = False
 
@@ -723,6 +733,7 @@ def llama3_70b_finetune_config(**user_kwargs: Unpack[Llama3FinetuneKwargs]) -> C
     if is_full_sft:
         config.model.tensor_model_parallel_size = 8
         config.model.pipeline_model_parallel_size = 4
+        config.peft = None
     else:
         if isinstance(peft, str) and peft.lower() in ["lora", "dora"]:
             config.peft = default_peft_config(peft)
@@ -760,6 +771,7 @@ def llama31_70b_finetune_config(**user_kwargs: Unpack[Llama3FinetuneKwargs]) -> 
     if is_full_sft:
         config.model.tensor_model_parallel_size = 8
         config.model.pipeline_model_parallel_size = 4
+        config.peft = None
     else:
         if isinstance(peft, str) and peft.lower() in ["lora", "dora"]:
             config.peft = default_peft_config(peft)
@@ -799,6 +811,7 @@ def llama31_405b_finetune_config(**user_kwargs: Unpack[Llama3FinetuneKwargs]) ->
     if is_full_sft:
         config.model.tensor_model_parallel_size = 8
         config.model.pipeline_model_parallel_size = 14
+        config.peft = None
     else:
         if isinstance(peft, str) and peft.lower() in ["lora", "dora"]:
             config.peft = default_peft_config(peft)
